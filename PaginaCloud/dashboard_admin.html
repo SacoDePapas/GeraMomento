@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    </head>
+<body class="admin-dashboard-body">
+    <div class="admin-dashboard-container">
+
+        <div class="module-box left-panel">
+            <h3>Historial</h3>
+            <table class="data-table" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Tag</th>
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="module-box bottom-left">
+            <h3>Estados de Puerta</h3>
+            <table class="data-table" id="doorStatusTable">
+                <thead>
+                    <tr>
+                        <th>Puerta</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+            <div class="action-buttons">
+                <button id="exportButton" class="export-btn">Exportar</button>
+                <button id="registerButton" class="register-btn">Registrar o Dar de Baja</button>
+            </div>
+            <a href="index.html" class="logout-button">Cerrar Sesión</a>
+        </div>
+
+        <div class="main-panel">
+            <div class="module-box">
+                <div class="alarm-module">
+                    <button> Alerta de Alarma</button>
+                </div>
+                <img src="assets/gerente-administrador-diferencias.webp" alt="Foto de Administrador" class="user-profile-image">
+                <p class="welcome-admin">Bienvenido, Administrador</p>
+            </div>
+
+            <div class="module-box" id="registerSection">
+                <h3>Registrar Usuario/Tarjeta</h3>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="regTagId">Tag ID:</label>
+                        <input type="text" id="regTagId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regNombreCompleto">Nombre Completo:</label>
+                        <input type="text" id="regNombreCompleto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEdad">Edad:</label>
+                        <input type="number" id="regEdad" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regTipoUsuario">Tipo de Usuario:</label>
+                        <select id="regTipoUsuario" required>
+                            <option value="">Seleccionar</option>
+                            <option value="estudiante">Estudiante</option>
+                            <option value="profesor">Profesor</option>
+                            <option value="personal">Personal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="regFechaRegistro">Fecha Registro:</label>
+                        <input type="text" id="regFechaRegistro" requiered>
+                    </div>
+                    <button type="submit">Registrar</button>
+                    <div id="registerFeedback" class="feedback-message"></div>
+                </form>
+            </div>
+
+            <div class="module-box" id="deregisterSection">
+                <h3>Buscar y Dar de Baja</h3>
+                <form id="deregisterForm">
+                    <div class="form-group">
+                        <label for="deregSearch">Buscar:</label>
+                        <input type="text" id="deregSearch" placeholder="Nombre o Tag ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="deregSelectUser">Seleccionar Usuario:</label>
+                        <select id="deregSelectUser">
+                            <option value="">Seleccionar</option>
+                            </select>
+                    </div>
+                    <button type="submit" class="deregister-btn">Dar de Baja</button>
+                    <div id="deregisterFeedback" class="feedback-message"></div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Bienvenido, Administrador</p>
+        </div>
+
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

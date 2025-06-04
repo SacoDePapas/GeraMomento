@@ -1,0 +1,503 @@
+/* ==================================================================== */
+/* ESTILOS GLOBALES / BASE                                              */
+/* ==================================================================== */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5; /* Un gris muy suave para el fondo general */
+    color: #333;
+    overflow-x: hidden; /* Evita el scroll horizontal */
+}
+
+/* Estilos para el contenedor del login */
+.login-container {
+    background-color: #5e65a360;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    position: relative; /* Para la imagen de fondo */
+    z-index: 1; /* Asegura que esté por encima de la imagen de fondo */
+    opacity: 0; /* Inicialmente oculto para el efecto fade-in */
+    transform: translateY(20px); /* Un pequeño desplazamiento para el efecto */
+    animation: fadeInSlideUp 0.8s forwards; /* Animación de entrada */
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-container h2 {
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 2em;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: bold;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"],
+.input-group select {
+    width: calc(100% - 22px); /* Ajusta el ancho para el padding y el borde */
+    padding: 12px;
+    border: 1px solid #000000;
+    border-radius: 6px;
+    font-size: 1.1em;
+    box-sizing: border-box; /* Incluye padding y border en el ancho */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input[type="text"]:focus,
+.input-group input[type="password"]:focus,
+.input-group select:focus {
+    border-color: #000000;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.login-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.error-message {
+    color: #dc3545; /* Rojo de Bootstrap para errores */
+    background-color: #f8d7da; /* Fondo rojo claro */
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+    display: none; /* Oculto por defecto */
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+/* Imagen de fondo para el login */
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    opacity: 0; /* Inicialmente oculto para el efecto fade-in */
+    transition: opacity 1s ease-in-out;
+}
+
+/* ==================================================================== */
+/* ESTILOS ESPECÍFICOS PARA EL DASHBOARD DE GUARDIA                     */
+/* ==================================================================== */
+
+body.guardia-dashboard-body {
+    background-color: #e9eff5; /* Un fondo azul más claro */
+    display: block; /* Vuelve a block para permitir el scroll natural */
+    padding: 20px;
+}
+
+.welcome-container {
+    background-color: #ffffff;
+    border: 1px solid #d1e7dd; /* Borde verde claro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.welcome-container h1 {
+    color: #28a745; /* Verde Bootstrap */
+    margin-bottom: 15px;
+    font-size: 2.5em;
+}
+
+.welcome-container p {
+    color: #555;
+    font-size: 1.1em;
+    margin-bottom: 25px;
+}
+
+.logout-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #dc3545; /* Rojo Bootstrap */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+}
+
+.cards-section-title {
+    color: #007bff; /* Azul Bootstrap */
+    margin-top: 40px;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.rfid-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Columnas responsivas */
+    gap: 25px; /* Espacio entre las tarjetas */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.rfid-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    text-align: left;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Para el efecto de la barra de estado */
+}
+
+.rfid-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.rfid-card h4 {
+    color: #343a40;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.rfid-card p {
+    margin: 8px 0;
+    color: #495057;
+    font-size: 0.95em;
+}
+
+.rfid-card p strong {
+    color: #212529;
+}
+
+/* Indicador de estado visual (punto o barra) */
+.status-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: 2px solid #fff; /* Borde blanco para mayor visibilidad */
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.rfid-card.active .status-dot {
+    background-color: #28a745; /* Verde para activo */
+}
+
+.rfid-card.inactive .status-dot {
+    background-color: #dc3545; /* Rojo para inactivo */
+}
+
+
+/* ==================================================================== */
+/* ESTILOS ESPECÍFICOS PARA EL DASHBOARD DE ADMINISTRADOR               */
+/* ==================================================================== */
+
+/* Fondo para el dashboard de Administrador */
+body.admin-dashboard-body {
+    background-color: #f4f6f9; /* Un gris muy claro */
+    display: block; /* Vuelve a block para permitir el scroll natural */
+    padding: 20px;
+}
+
+/* Contenedor principal del dashboard de Administrador */
+body.admin-dashboard-body .admin-dashboard-container {
+    background-color: #584848;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 1200px; /* Ancho máximo para el layout de administrador */
+    width: 95%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Dos columnas principales */
+    grid-template-rows: auto auto auto; /* Filas para Historial/Estados, Foto, Bienvenida */
+    gap: 25px; /* Espacio entre los elementos de la cuadrícula */
+    grid-template-areas:
+        "left-panel main-panel"
+        "bottom-left main-panel"
+        "footer footer"; /* Define áreas con nombres */
+}
+
+/* Contenedores de las áreas */
+.left-panel { grid-area: left-panel; display: flex; flex-direction: column; gap: 25px; }
+.main-panel { grid-area: main-panel; display: flex; flex-direction: column; gap: 25px; }
+.bottom-left { grid-area: bottom-left; display: flex; flex-direction: column; gap: 25px; }
+.footer { grid-area: footer; text-align: right; padding-top: 20px; color: #000000;}
+
+/* Estilos para los módulos (Historial, Estados, Registro, Búsqueda, etc.) */
+.module-box {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    position: relative;
+}
+
+.module-box h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #343a40;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+/* Estilos para la tabla dentro de los módulos (Historial, Estados de Puerta) */
+.module-box .data-table {
+    width: 100%;
+    border-collapse: separate; /* Importante para que border-radius funcione en las celdas */
+    border-spacing: 0; /* Elimina el espacio entre celdas */
+    font-size: 0.9em;
+    border-radius: 8px; /* Bordes redondeados para la tabla en general */
+    overflow: hidden; /* Oculta el contenido que sobresale de los bordes redondeados */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra suave para la tabla */
+    margin-top: 15px; /* Espacio superior, si es necesario */
+}
+.module-box .data-table th, .module-box .data-table td {
+    border: none; /* Quitamos los bordes individuales de las celdas para un look más limpio */
+    padding: 12px 15px; /* Ajustamos el padding */
+    text-align: left;
+}
+.module-box .data-table th {
+    background-color: #36445263; /* Color de fondo para encabezados */
+    color: #4a79a8;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Bordes redondeados para las celdas de encabezado de la primera fila */
+.module-box .data-table thead tr:first-child th:first-child {
+    border-top-left-radius: 8px;
+}
+.module-box .data-table thead tr:first-child th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.module-box .data-table tbody tr {
+    background-color: #5245455b;
+    transition: background-color 0.3s ease;
+}
+.module-box .data-table tbody tr:nth-child(even) {
+    background-color: #2968a762; 
+}
+.module-box .data-table tbody tr:hover {
+    background-color: #0c7dee; 
+}
+
+
+.module-box .data-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+.module-box .data-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+/* Opcional: una línea sutil entre filas para una mejor distinción */
+.module-box .data-table tbody tr:not(:last-child) {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+
+/* Estilos para el módulo de Alarma */
+.alarm-module {
+    background-color: #ff000069; /* Amarillo claro */
+    border-color: #ffeeba;
+    color: #856404;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para la imagen del usuario/admin */
+.user-profile-image {
+    width: 180px; /* Tamaño más grande para la imagen */
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff; /* Borde azul */
+    display: block; /* Para centrar con margin auto */
+    margin: 0 auto 20px auto;
+}
+
+/* Contenedor de bienvenida */
+.welcome-admin {
+    text-align: center;
+    font-size: 1.2em;
+    color: #343a40;
+    margin-top: 15px;
+}
+
+/* Estilos para formularios de registro/búsqueda */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #495057;
+    font-weight: bold;
+}
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: calc(100% - 22px); /* Ancho ajustado con padding y borde */
+    padding: 10px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; /* Incluye padding y border en el width */
+}
+.form-group button {
+    background-color: #28a745;
+    color: rgb(255, 0, 0);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+.form-group button:hover {
+    background-color: #218838;
+}
+
+/* Botones de acción */
+.action-buttons {
+    display: flex;
+    flex-direction: column; /* Apila los botones */
+    gap: 15px; /* Espacio entre botones */
+    margin-top: 20px;
+}
+.action-buttons button {
+    width: 100%; /* Botones de ancho completo */
+    padding: 12px 20px;
+    font-size: 1.1em;
+    background-color: #2a6db4; /* Color azul por defecto */
+}
+.action-buttons button:hover {
+    background-color: #0056b3;
+}
+.action-buttons button.export-btn {
+    background-color: #17a2b8; /* Info blue */
+}
+.action-buttons button.export-btn:hover {
+    background-color: #138496;
+}
+.action-buttons button.register-btn {
+    background-color: #ffc107; /* Warning yellow */
+    color: #333; /* Texto oscuro para contraste */
+}
+.action-buttons button.register-btn:hover {
+    background-color: #e0a800;
+}
+/* Botón de dar de baja específico */
+button.deregister-btn {
+    background-color: #dc3545; /* Rojo */
+}
+button.deregister-btn:hover {
+    background-color: #c82333;
+}
+
+
+/* Mensajes de feedback */
+.feedback-message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: none; /* Oculto por defecto */
+}
+.feedback-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.feedback-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    body.admin-dashboard-body .admin-dashboard-container {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas más pequeñas */
+        grid-template-areas:
+            "main-panel"
+            "left-panel"
+            "bottom-left"
+            "footer";
+    }
+    .user-profile-image {
+        width: 150px;
+        height: 150px;
+    }
+}
