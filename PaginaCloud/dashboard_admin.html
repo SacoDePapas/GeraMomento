@@ -31,7 +31,8 @@
             <table class="data-table" id="doorStatusTable">
                 <thead>
                     <tr>
-                        <th>Puerta</th>
+                        <th>Modulo</th>
+                        <th>Lugar</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
@@ -42,7 +43,7 @@
                 <button id="exportButton" class="export-btn">Exportar</button>
                 <button id="registerButton" class="register-btn">Registrar o Dar de Baja</button>
             </div>
-            <a href="index.html" class="logout-button">Cerrar Sesión</a>
+            <a href="index.html" class="logout-button" id="logout-button">Cerrar Sesión</a>
         </div>
 
         <div class="main-panel">
@@ -62,6 +63,14 @@
                         <input type="text" id="regTagId" required>
                     </div>
                     <div class="form-group">
+                        <label for="regUsername">Usuario:</label>
+                        <input type="text" id="regUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Contraseña:</label>
+                        <input type="text" id="regPassword" required>
+                    </div>                    
+                    <div class="form-group">
                         <label for="regNombreCompleto">Nombre Completo:</label>
                         <input type="text" id="regNombreCompleto" required>
                     </div>
@@ -72,15 +81,10 @@
                     <div class="form-group">
                         <label for="regTipoUsuario">Tipo de Usuario:</label>
                         <select id="regTipoUsuario" required>
-                            <option value="">Seleccionar</option>
                             <option value="estudiante">Estudiante</option>
-                            <option value="profesor">Profesor</option>
-                            <option value="personal">Personal</option>
+                            <option value="Guardia">Guardia</option>
+                            <option value="Administrador">Administrador</option>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="regFechaRegistro">Fecha Registro:</label>
-                        <input type="text" id="regFechaRegistro" requiered>
                     </div>
                     <button type="submit">Registrar</button>
                     <div id="registerFeedback" class="feedback-message"></div>

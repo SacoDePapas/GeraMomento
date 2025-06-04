@@ -1,5 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Funciones de Utilidad ---
+document.addEventListener('DOMContentLoaded', async () => {
+    // API base URL
+    const API_BASE_URL = 'http://172.20.10.14:8000';
+    
+    // --- Utility Functions ---
     function getFormattedDateTime() {
         const now = new Date();
         const year = now.getFullYear();
@@ -11,10 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     }
 
-    function generateRandomTagId() {
-        return Math.floor(10000 + Math.random() * 90000).toString();
-    }
-
     function showFeedback(element, message, type) {
         element.textContent = message;
         element.className = `feedback-message ${type}`;
@@ -23,145 +22,195 @@ document.addEventListener('DOMContentLoaded', () => {
             element.style.display = 'none';
             element.textContent = '';
             element.className = 'feedback-message';
-        }, 3000); // Ocultar después de 3 segundos
+        }, 3000);
     }
 
-    // --- Simulación de Base de Datos (en memoria del navegador) ---
-    // Usaremos localStorage para persistir los datos entre sesiones del navegador
-    let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [
-        { tagId: "RTG12345", nombre: "Juan Pérez", edad: 30, tipo: "personal", fechaRegistro: "01/01/2024 10:00:00" },
-        { tagId: "RTG67890", nombre: "María García", edad: 22, tipo: "estudiante", fechaRegistro: "05/01/2024 14:30:00" }
-    ];
+    // --- API Fetch Functions ---
+    async function fetchRegisteredUsers() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/usuarios`);
+            if (!response.ok) throw new Error('Failed to fetch users');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            showFeedback(document.getElementById('registerFeedback'), 'Error loading users', 'error');
+            return [];
+        }
+    }
 
-    // --- Historial de Escaneos (datos de ejemplo) ---
+    async function fetchHistoryData() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/detecciones`);
+            if (!response.ok) throw new Error('Failed to fetch history');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching history:', error);
+            return [];
+        }
+    }
+
+    async function fetchDoorStatus() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/modulos`);
+            if (!response.ok) throw new Error('Failed to fetch door status');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching door status:', error);
+            return [];
+        }
+    }
+
+    // --- Initialize Data ---
+    let registeredUsers = await fetchRegisteredUsers();
+    const historyData = await fetchHistoryData();
+    const doorStatusData = await fetchDoorStatus();
+
+    // --- Populate Tables ---
     const historyTableBody = document.querySelector('#historyTable tbody');
-    const historyData = [
-        { tag: "41349", nombre: "Pene", fecha: "hoy", hora: "jaja", estado: "permitida" },
-        { tag: "83238", nombre: "Pucha", fecha: "ayer", hora: "ash", estado: "denegada" },
-        { tag: "12345", nombre: "Ana López", fecha: "01/06/2025", hora: "08:15:00", estado: "permitida" },
-        { tag: "67890", nombre: "Luis Soto", fecha: "01/06/2025", hora: "09:00:00", estado: "denegada" },
-    ];
+    const doorStatusTableBody = document.querySelector('#doorStatusTable tbody');
 
     function populateHistoryTable() {
-        historyTableBody.innerHTML = ''; // Limpiar antes de rellenar
+        historyTableBody.innerHTML = '';
         historyData.forEach(item => {
             const row = historyTableBody.insertRow();
-            row.insertCell().textContent = item.tag;
-            row.insertCell().textContent = item.nombre;
-            row.insertCell().textContent = item.fecha;
-            row.insertCell().textContent = item.hora;
-            row.insertCell().textContent = item.estado;
+            row.insertCell().textContent = item.TagId;
+            row.insertCell().textContent = item.Nombre;
+            row.insertCell().textContent = item.FechaDeteccion;
+            row.insertCell().textContent = item.HoraDeteccion;
+            row.insertCell().textContent = item.status;
         });
     }
-    populateHistoryTable(); // Rellenar al cargar
-
-    // --- Estados de Puerta (datos de ejemplo) ---
-    const doorStatusTableBody = document.querySelector('#doorStatusTable tbody');
-    const doorStatusData = [
-        { puerta: "Mod 1", estado: "cerrada" },
-        { puerta: "Mod 2", estado: "cerrada" },
-        { puerta: "Mod 3", estado: "abierta" },
-    ];
 
     function populateDoorStatusTable() {
         doorStatusTableBody.innerHTML = '';
         doorStatusData.forEach(item => {
             const row = doorStatusTableBody.insertRow();
-            row.insertCell().textContent = item.puerta;
-            row.insertCell().textContent = item.estado;
+            row.insertCell().textContent = item.Id;
+            row.insertCell().textContent = item.Nombre;
+            row.insertCell().textContent = item.status;
         });
     }
-    populateDoorStatusTable(); // Rellenar al cargar
 
-    // --- Funcionalidad de Exportar ---
-    document.getElementById('exportButton').addEventListener('click', () => {
-        alert('Función de Exportar simulada: Se descargarían los datos del historial.');
-        // En un escenario real, aquí se generaría un archivo CSV/Excel
-        // o se haría una llamada a un backend para obtener los datos.
+    populateHistoryTable();
+    populateDoorStatusTable();
+
+    // --- Export Functionality ---
+    document.getElementById('exportButton').addEventListener('click', async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/export`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'historial_accesos.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } else {
+                throw new Error('Export failed');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            alert('Error al exportar los datos');
+        }
     });
 
-    // --- Funcionalidad de Cerrar Sesión ---
-    document.getElementById('logoutButton').addEventListener('click', () => {
-        window.location.href = 'login.html';
+    // --- Logout Functionality ---
+    document.getElementById('logout-button').addEventListener('click', () => {
+        window.location.href = 'index.html';
     });
 
-    // --- Funcionalidad de Registro ---
+    // --- Registration Functionality ---
     const registerForm = document.getElementById('registerForm');
     const regTagIdInput = document.getElementById('regTagId');
+    const regUserInput = document.getElementById('regUsername');
+    const regPasswordInput = document.getElementById('regPassword');
     const regNombreCompletoInput = document.getElementById('regNombreCompleto');
     const regEdadInput = document.getElementById('regEdad');
     const regTipoUsuarioSelect = document.getElementById('regTipoUsuario');
-    const regFechaRegistroInput = document.getElementById('regFechaRegistro');
     const registerFeedback = document.getElementById('registerFeedback');
 
-    // Set current date for registration form
-    regFechaRegistroInput.value = getFormattedDateTime();
 
-    registerForm.addEventListener('submit', (event) => {
+    registerForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const newTagId = regTagIdInput.value.trim();
-        const newNombre = regNombreCompletoInput.value.trim();
-        const newEdad = parseInt(regEdadInput.value);
-        const newTipo = regTipoUsuarioSelect.value;
-        const newFecha = regFechaRegistroInput.value;
+        const newUser = {
+            tagId: regTagIdInput.value.trim(),
+            nombre: regNombreCompletoInput.value.trim(),
+            edad: parseInt(regEdadInput.value),
+            tipo: regTipoUsuarioSelect.value,
+            username: regUserInput.value.trim(),
+            password: regPasswordInput.value.trim()
+        };
 
-        if (!newTagId || !newNombre || isNaN(newEdad) || newEdad <= 0 || !newTipo) {
+        if (!newUser.tagId || !newUser.nombre || isNaN(newUser.edad) || newUser.edad <= 0 || !newUser.tipo || !newUser.username || !newUser.password) {
             showFeedback(registerFeedback, 'Por favor, rellena todos los campos correctamente.', 'error');
             return;
         }
 
-        // Check for duplicate Tag ID
-        if (registeredUsers.some(user => user.tagId === newTagId)) {
-            showFeedback(registerFeedback, 'Error: Ya existe un usuario con este Tag ID.', 'error');
-            return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/usuarios`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                registeredUsers = await fetchRegisteredUsers(); // Refresh user list
+                showFeedback(registerFeedback, `Usuario "${newUser.nombre}" registrado con éxito.`, 'success');
+                registerForm.reset();
+                populateDeregisterSelect();
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            showFeedback(registerFeedback, error.message || 'Error al registrar usuario', 'error');
         }
-
-        const newUser = {
-            tagId: newTagId,
-            nombre: newNombre,
-            edad: newEdad,
-            tipo: newTipo,
-            fechaRegistro: newFecha
-        };
-
-        registeredUsers.push(newUser);
-        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers)); // Guardar en localStorage
-
-        showFeedback(registerFeedback, `Usuario "${newNombre}" registrado con éxito.`, 'success');
-        registerForm.reset(); // Limpiar formulario
-        regFechaRegistroInput.value = getFormattedDateTime(); // Reset fecha
-        populateDeregisterSelect(); // Actualizar lista de dar de baja
     });
 
-    // --- Funcionalidad de Búsqueda y Dar de Baja ---
+    // --- Deregistration Functionality ---
     const deregisterForm = document.getElementById('deregisterForm');
     const deregSearchInput = document.getElementById('deregSearch');
     const deregSelectUser = document.getElementById('deregSelectUser');
     const deregisterFeedback = document.getElementById('deregisterFeedback');
 
-    function populateDeregisterSelect(searchTerm = '') {
+    async function populateDeregisterSelect(searchTerm = '') {
         deregSelectUser.innerHTML = '<option value="">Seleccionar</option>';
-        const filteredUsers = registeredUsers.filter(user =>
-            user.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            user.tagId.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        filteredUsers.forEach(user => {
+        
+        const usersToShow = searchTerm 
+            ? registeredUsers.filter(user =>
+                user.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.tagId.toLowerCase().includes(searchTerm.toLowerCase()))
+            : registeredUsers;
+
+        usersToShow.forEach(user => {
             const option = document.createElement('option');
             option.value = user.tagId;
             option.textContent = `${user.nombre} (ID: ${user.tagId})`;
             deregSelectUser.appendChild(option);
         });
     }
-    populateDeregisterSelect(); // Rellenar al cargar
+
+    populateDeregisterSelect();
 
     deregSearchInput.addEventListener('input', () => {
         populateDeregisterSelect(deregSearchInput.value);
     });
 
-    deregisterForm.addEventListener('submit', (event) => {
+    deregisterForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-
         const tagIdToRemove = deregSelectUser.value;
 
         if (!tagIdToRemove) {
@@ -169,16 +218,40 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const initialLength = registeredUsers.length;
-        registeredUsers = registeredUsers.filter(user => user.tagId !== tagIdToRemove);
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/${tagIdToRemove}`, {
+                method: 'DELETE'
+            });
 
-        if (registeredUsers.length < initialLength) {
-            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers)); // Guardar en localStorage
-            showFeedback(deregisterFeedback, `Usuario con Tag ID "${tagIdToRemove}" dado de baja.`, 'success');
-            populateDeregisterSelect(); // Actualizar lista
-            deregisterForm.reset();
-        } else {
-            showFeedback(deregisterFeedback, 'Error: Usuario no encontrado.', 'error');
+            if (response.ok) {
+                registeredUsers = await fetchRegisteredUsers(); // Refresh user list
+                showFeedback(deregisterFeedback, `Usuario con Tag ID "${tagIdToRemove}" dado de baja.`, 'success');
+                populateDeregisterSelect();
+                deregisterForm.reset();
+            } else {
+                throw new Error('Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Deregistration error:', error);
+            showFeedback(deregisterFeedback, 'Error al dar de baja al usuario', 'error');
         }
     });
+
+    // --- Periodic Data Refresh ---
+    setInterval(async () => {
+        registeredUsers = await fetchRegisteredUsers();
+        populateDeregisterSelect(deregSearchInput.value);
+        
+        const newHistoryData = await fetchHistoryData();
+        if (JSON.stringify(newHistoryData) !== JSON.stringify(historyData)) {
+            historyData = newHistoryData;
+            populateHistoryTable();
+        }
+        
+        const newDoorStatusData = await fetchDoorStatus();
+        if (JSON.stringify(newDoorStatusData) !== JSON.stringify(doorStatusData)) {
+            doorStatusData = newDoorStatusData;
+            populateDoorStatusTable();
+        }
+    }, 30000); // Refresh every 30 seconds
 });
